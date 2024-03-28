@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Leaderboard</title>
+  </head>
+  <body>
+    <div class="main">
+      <h1>30 Days Of Javascript Challange Leaderboard</h1>
+
+      <form>
+        <input
+          type="text"
+          id="firstname"
+          name="firstname"
+          placeholder="First Name"
+        />
+        <input
+          type="text"
+          id="lastname"
+          name="lastname"
+          placeholder="Last Name"
+        />
+        <input type="text" id="country" name="country" placeholder="country" />
+        <input
+          type="text"
+          id="score"
+          name="firstname"
+          placeholder="Player Score"
+        />
+        <button type="button" class="addPlayerbtn" onclick="addPlayer()">
+          Add Player
+        </button>
+      </form>
+      <p class="requiredText"></p>
+      <div class="leaderboard"></div>
+    </div>
+
+    <script
+      src="https://kit.fontawesome.com/4a369662d4.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      let leaderboard = document.querySelector(".leaderboard");
+      let requiredText = document.querySelector(".requiredText");
+      let myInputs = document.querySelectorAll("input");
+      let addPlayerbtn = document.querySelector(".addPlayerbtn");
+
+      addPlayerbtn.style.padding = "10px 40px";
+      addPlayerbtn.style.backgroundColor = "antiquewhite";
+      addPlayerbtn.style.border = "1px solid antiquewhite";
+      addPlayerbtn.style.color = "crimson";
+
+      myInputs.forEach((myInput) => {
+        myInput.style.border = "1px solid antiquewhite";
+        myInput.style.padding = "10px 5px";
+      });
+
+      function addPlayer() {
+        let firstName = document.getElementById("firstname").value;
+        let lastName = document.getElementById("lastname").value;
+        let country = document.getElementById("country").value;
+        let score = document.getElementById("score").value;
+
+        const requiredText = document.querySelector(".requiredText");
+        requiredText.textContent = "";
+
+        if (!firstName || !lastName || !country || !score) {
+          requiredText.textContent = "All fields are required";
+          requiredText.style.color = "red";
+          requiredText.style.fontWeight = "bold";
+        } else {
+          let leaders = document.createElement("div");
+          leaders.classList.add("leaders");
+
+          leaders.style.backgroundColor = "antiquewhite";
+          leaders.style.display = "flex";
+          leaders.style.justifyContent = "space-between";
+          leaders.style.alignItems = "center";
+          leaders.style.width = "1035px";
+          leaders.style.margin = "10px auto";
+          leaders.style.padding = "10px 15px";
+
+          const date = new Date();
+
+          let monthList = [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ];
+
+          let day = date.getDate();
+          let month = date.getMonth();
+          let year = date.getFullYear();
+          let hour = date.getHours();
+          let minutes = date.getMinutes();
+
+          let leftPart = document.createElement("div");
+
+          let time = document.createElement("p");
+          time.style.fontSize = "12px";
+          time.style.color = "gray";
+          time.innerText = `${monthList[month]} ${day},${year} ${hour}:${minutes}`;
+
+          let nameSurname = document.createElement("p");
+          nameSurname.style.fontSize = "20px";
+          nameSurname.style.marginBottom = "0px";
+          nameSurname.innerText = `${firstName} ${lastName}`;
+
+          leftPart.style.textAlign = "left";
+          leftPart.style.textTransform = "uppercase";
+
+          leftPart.appendChild(nameSurname);
+          leftPart.appendChild(time);
+
+          leaders.appendChild(leftPart);
+
+          let countrySpan = document.createElement("span");
+          countrySpan.classList.add("countrySpan");
+          countrySpan.style.fontSize = "20px";
+          countrySpan.style.textTransform = "uppercase";
+          countrySpan.textContent = `${country}`;
+          leaders.appendChild(countrySpan);
+
+          let scoreSpan = document.createElement("span");
+          scoreSpan.classList.add("scoreSpan");
+          scoreSpan.style.fontSize = "20px";
+          scoreSpan.textContent = `${score}`;
+          leaders.appendChild(scoreSpan);
+
+          let trash = document.createElement("i");
+          trashSpan = document.createElement("span");
+          trashSpan.appendChild(trash);
+          trashSpan.setAttribute("class", "circle");
+
+          trash.setAttribute("class", "fa-solid fa-trash-can");
+
+          trash.style.color = "#ff0000";
+
+          trashSpan.addEventListener("click", function () {
+            this.closest(".leaders").remove();
+          });
+
+          let plusFive = document.createElement("span");
+          plusFive.setAttribute("class", "circle");
+          plusFive.textContent = "+5";
+
+          score = parseInt(score);
+          plusFive.addEventListener("click", function () {
+            score += 5;
+            scoreSpan.textContent = score;
+
+            updateLeaderboard()
+          });
+
+          let minusFive = document.createElement("span");
+          minusFive.setAttribute("class", "circle");
+          minusFive.textContent = "-5";
+
+          minusFive.addEventListener("click", function () {
+            score -= 5;
+            scoreSpan.textContent = score;
+            
+            updateLeaderboard()
+          });
+
+          let circleDiv = document.createElement("div");
+          circleDiv.style.display = "flex";
+          circleDiv.appendChild(trashSpan);
+          circleDiv.appendChild(plusFive);
+          circleDiv.appendChild(minusFive);
+
+          leaders.appendChild(circleDiv);
+          leaderboard.appendChild(leaders);
+
+          updateLeaderboard()
+        }
+      }
+
+      //sorting
+
+      function updateLeaderboard() {
+        let allLeaders = document.querySelectorAll(".leaders");
+        let leaderArray = Array.from(allLeaders);
+
+          leaderArray.sort((a, b) => {
+          let scoreA = parseInt(a.querySelector(".scoreSpan").textContent);
+          let scoreB = parseInt(b.querySelector(".scoreSpan").textContent);
+          return scoreB - scoreA;
+        });
+
+        leaderboard.innerHTML = "";
+
+        leaderArray.forEach((leader) => {
+          leaderboard.appendChild(leader);
+        });
+      }
+    
+    </script>
+  </body>
+</html>
